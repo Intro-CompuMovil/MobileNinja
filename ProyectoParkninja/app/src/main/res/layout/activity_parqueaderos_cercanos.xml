@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ParqueaderosCercanosActivity"
+    >
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/img3" />
+
+    <ImageView
+        android:id="@+id/imageParqueadero"
+        android:layout_width="370dp"
+        android:layout_height="400dp"
+        android:layout_centerInParent="true"
+        app:srcCompat="@drawable/imgparqueadero" />
+
+    <Button
+        android:id="@+id/botonPrecios"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ver por precios"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/imageParqueadero"/>
+
+    <Button
+        android:id="@+id/botonTransParqueadero"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="580dp"
+        android:layout_marginHorizontal="50dp"
+        android:background="@color/transparente"
+        android:text="." />
+
+    <Button
+        android:id="@+id/botonTransParqueadero2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="."
+        android:layout_marginVertical="290dp"
+        android:layout_marginHorizontal="270dp"
+        android:background="@color/transparente"/>
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="355dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Mapa de parqueaderos cercanos"
+        android:textColor="@color/blanco"
+        android:textSize="30sp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="50dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView4"
+        android:layout_marginTop="51dp"
+        android:layout_marginStart="40dp"
+        android:text="Selecciona el parqueadero que deseas conocer o apartar"
+        android:textColor="@color/blanco"
+        android:textSize="20sp" />
+
+
+</RelativeLayout>
