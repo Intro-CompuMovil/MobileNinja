@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "468220146",
+    "project_id": "proyectoparkninja",
+    "storage_bucket": "proyectoparkninja.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:468220146:android:54a897b51c1e4c0385f86b",
+        "android_client_info": {
+          "package_name": "com.example.proyectoparkninja"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRiVLRgnnvg3M0oVI0IWM25uvKLS982gE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

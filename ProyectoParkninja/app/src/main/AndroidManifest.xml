@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -23,22 +24,35 @@
         android:theme="@style/Theme.ProyectoParkninja"
         tools:targetApi="31">
         <activity
-            android:name=".ReservarCupoActivity"
+            android:name=".activity_favorites"
             android:exported="false" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.proyectoparkninja.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <activity
-            android:name=".permisosCamaraActivity"
+            android:name=".EditarPerfil"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyA28qh3MJ6M8PIubhagijVFivj_r2X0hTM" />
+
+        <activity
+            android:name=".ReservarCupoActivity"
             android:exported="false" />
         <activity
             android:name=".InfoParqueaderoActivity"
             android:exported="false" />
         <activity
-            android:name=".Datos.identificadores"
-            android:exported="false" />
-        <activity
             android:name=".PreciosParqueaderosCercanosActivity"
-            android:exported="false" />
-        <activity
-            android:name=".BuscarParqueaderoActivity"
             android:exported="false" />
         <activity
             android:name=".ParqueaderosCercanosActivity"

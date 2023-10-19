@@ -6,89 +6,97 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AlertDialog
+import com.google.firebase.auth.FirebaseAuth
 
 class InicioActivity : AppCompatActivity() {
+    private val permissionsManager by lazy { PermissionsManager(this) }
+    private lateinit var buscarBtn: ImageButton
+    private lateinit var EdiPerfil: Button
+    private lateinit var intent1: Intent
+    private lateinit var intent2: Intent
+    private lateinit var Lugar: EditText
+    private lateinit var texto: TextView
+    private lateinit var auth: FirebaseAuth
+    private val Location_PERMISSION_Code = 3
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_inicio)
+        setContentView(R.layout.activity_inicio) // Mueve esta línea al principio de onCreate
+        texto = findViewById(R.id.textnombre) // Luego puedes acceder a 'textnombre'
 
-        val buscarBtn : ImageButton = findViewById(R.id.imgBtnBuscar)
-        val subirFoto:Button =findViewById(R.id.subirFotoBtn)
-        val tomarFoto:Button = findViewById(R.id.tomarFotoBtn)
-        val intent1 = Intent(this, ParqueaderosCercanosActivity::class.java)
-        val intent2 = Intent(this, ParqueaderosCercanosActivity::class.java)
-
-        tomarFoto.setOnClickListener(){
-            checkPermissions()
+        auth = FirebaseAuth.getInstance()
+        val user = auth.currentUser
+        if (user == null) {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        } else {
+            texto.text = user.email
         }
 
-        subirFoto.setOnClickListener(){
-            requestStoragePermission()
-        }
+        buscarBtn = findViewById(R.id.imgBtnBuscar)
+        Lugar = findViewById(R.id.nombreEditText)
+        EdiPerfil = findViewById(R.id.EditarPerfil)
+        intent1 = Intent(this, ParqueaderosCercanosActivity::class.java)
+        intent2 = Intent(this, EditarPerfil::class.java)
+
+
 
         buscarBtn.setOnClickListener(){
-            requestLocationPermission()
-            startActivity(intent1)
+            if (!permissionsManager.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                if (permissionsManager.shouldShowRequestPermissionRationale(PermissionsManager.LOCATION_PERMISSION)) {
+                    showPermissionRationaleDialogLocalizacion()
+                }
+                permissionsManager.requestPermission(Manifest.permission.ACCESS_FINE_LOCATION, Location_PERMISSION_Code)
+            }
+            else{
+                val ubicacion = Lugar.text.toString()
+                if(ubicacion.isNotEmpty()){
+                    intent1.putExtra("Lugar",ubicacion)
+                    startActivity(intent1)
+                }
+                else{
+                    val toast=Toast.makeText(this,"La direccion esta vacia porfavor llenala",Toast.LENGTH_LONG)
+                    toast.show()
+                }
+
+            }
+        }
+        EdiPerfil.setOnClickListener(){
+            startActivity(intent2)
         }
 
 
     }
 
-    //permisos de ubicacion
-    val LOCATION_PERMISSION_REQUEST_CODE=1
-    val STORAGE_PERMISSION_REQUEST_CODE = 1
+    private fun showPermissionRationaleDialogLocalizacion() {
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Permiso de localizacion")
+            .setMessage("Necesitamos acceso a la localizacion para mostrarte el mapa.")
+            .setPositiveButton("Permitir") { _, _ ->
+                permissionsManager.requestPermission(PermissionsManager.LOCATION_PERMISSION, Location_PERMISSION_Code)
+            }
+            .setNegativeButton("Cancelar") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
 
-    private fun requestLocationPermission() {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-
-        } else {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
-        }
-    }
-    //permisos camara
-    private fun checkPermissions() {
-        if(ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA)!=PackageManager.PERMISSION_GRANTED){
-            //permiso no aceptado por el momento
-            requestCameraPermission()
-        }else{
-            //abrir camara
-            openCamera()
-        }
+        dialog.show()
     }
 
-    private fun openCamera() {
-        Toast.makeText(this, "Abriendo Cámara", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun requestCameraPermission() {
-        if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)){
-            //El usuario ya ha rechazado los permisos
-            Toast.makeText(this, "Permisos rechazados", Toast.LENGTH_SHORT).show()
-
-        }else {
-            //pedir permiso, porque aun no los ha rechazado
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA),15)
-        }
-    }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if(requestCode==15){//nuestros permisos
+        if(requestCode==Location_PERMISSION_Code){//nuestros permisos
             if(grantResults.isNotEmpty()&& grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                openCamera()
+                startActivity(intent1)
             }else{
                 //el permiso no ha sido aceptado
                 Toast.makeText(this, "Permisos rechazados por primera vez", Toast.LENGTH_SHORT).show()
@@ -96,30 +104,7 @@ class InicioActivity : AppCompatActivity() {
         }
     }
 
-    //permisos almacenamiento
-    private fun requestStoragePermission() {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED
-            && ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
 
-
-        } else {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf<String>(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ),
-                STORAGE_PERMISSION_REQUEST_CODE
-            )
-        }
-    }
 
 
 }
